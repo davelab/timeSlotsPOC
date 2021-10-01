@@ -36,10 +36,12 @@ function EventStyle(event, start, end, isSelected) {
 
 const TimeSlotsCalendar = (props) => {
   const [slots, setSlots] = useState(events);
+  const [slotDialogOpen, setSlotDialogOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [start, setStart] = useState();
   const [end, setEnd] = useState();
   const [capacity, setCapacity] = useState(10);
+  const [editSlot, setEditSlot] = useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -67,6 +69,11 @@ const TimeSlotsCalendar = (props) => {
     handleClose();
   };
 
+  const handleOpenEditSlot = (event) => {
+    setSlotDialogOpen(true);
+    setEditSlot(event);
+  };
+
   return (
     <div>
       <Calendar
@@ -79,7 +86,7 @@ const TimeSlotsCalendar = (props) => {
         style={{ height: "100%" }}
         views={["week"]}
         eventPropGetter={EventStyle}
-        onSelectEvent={(event) => alert(event.title)}
+        onSelectEvent={handleOpenEditSlot}
         components={{
           week: {
             event: EventWeek,
@@ -132,6 +139,18 @@ const TimeSlotsCalendar = (props) => {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={saveSlot}>Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={slotDialogOpen} onClose={() => setSlotDialogOpen(false)}>
+        <DialogTitle>Edit Slot</DialogTitle>
+        <DialogContent>
+          {editSlot.id} - {editSlot.title}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setSlotDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setSlotDialogOpen(false)}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>
